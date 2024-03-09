@@ -1,0 +1,51 @@
+<div class="d-flex gap-1 align-items-center justify-content-center">
+    @if (MaxPage > 1)
+    {
+        if (Current > 1)
+        {
+            <a href="@Page(Current-1)" class="btn btn-success">Previous</a>
+        }
+        if (MaxPage > Minimum && Current > Offset + 1)
+        {
+            <a href="@Page(1)" class="btn btn-success">1</a>
+            <span class="fw-bold fs-5">...</span>
+        }
+        for (int i = Start; i <= Count; i++)
+        {
+            <a href="@Page(i)" class="btn btn-outline-success @(i == Current?"active":string.Empty)">@i</a>
+        }
+        if (MaxPage > Minimum && MaxPage - Current >= Offset + 1)
+        {
+            <span class="fw-bold fs-5">...</span>
+            <a href="@Page(MaxPage)" class="btn btn-success">@MaxPage</a>
+        }
+        if (Current < MaxPage)
+        {
+            <a href="@Page(Current+1)" class="btn btn-success">Next</a>
+        }
+    }
+</div>
+
+@code {
+    [Parameter] public string? Url { get; set; }
+    [Parameter] public int Current { get; set; }
+    [Parameter] public int MaxPage { get; set; }
+
+    private int Start { get; set; }
+    private int Count { get; set; }
+    private int Offset = 3;
+    private int Minimum => (int)Math.Ceiling(a: (Offset * 2));
+
+    private string Page(int page) => $"{Url}/{page}";
+
+    protected override void OnInitialized()
+    {
+        Start = 1;
+        Count = MaxPage > Minimum ? Minimum : MaxPage;
+        if (MaxPage > Minimum && Current > Count / 2)
+        {
+            Start = Current - Offset > 0 ? Current - Offset : 1;
+            Count = MaxPage <= Current + Offset ? MaxPage : Current + Offset;
+        }
+    }
+}

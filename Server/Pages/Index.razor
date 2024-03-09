@@ -1,0 +1,12 @@
+@page "/{page:int?}"
+
+<PageTitle>Blazor Pagination Component</PageTitle>
+
+<div class="py-5">
+    <Pagination Current="@(page ?? 1)" MaxPage="25" />
+</div>
+
+@code {
+    [Parameter]
+    public int? page { get; set; }
+}
